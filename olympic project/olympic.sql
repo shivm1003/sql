@@ -52,3 +52,58 @@ GROUP BY games
 ORDER BY games;
 
 
+-- 4. Which year saw the highest and lowest no of countries participating in olympics
+-- Problem Statement: Write a SQL query to return the Olympic Games which had the highest participating countries and the lowest 	participating 	countries.
+SELECT
+DISTINCT
+concat(first_value(games) OVER(ORDER BY counts), '-' , first_value(counts) OVER(ORDER BY counts)) as "lowest_country",
+concat(first_value(games) OVER(ORDER BY counts DESC), '-', first_value(counts) over(ORDER BY counts DESC)) as "highest_country"
+FROM (
+	SELECT games, count(*) as "counts"
+	FROM (
+		SELECT ae.games, nr.region
+		FROM noc_region as nr
+		INNER JOIN
+		athlete_event as ae ON
+		ae.noc = nr.noc
+		GROUP BY ae.games, nr.region) as tmp
+	GROUP BY games
+	ORDER BY count(*)) as tmp1
+
+
+-- 5. Which nation has participated in all of the olympic games
+--Problem Statement: SQL query to return the list of countries who have been part of every Olympics games.
+
+SELECT * FROM (
+	SELECT region, count(*) FROM (
+		SELECT ae.games, nr.region
+		FROM athlete_event as ae
+		INNER JOIN noc_region as nr
+		ON ae.noc = nr.noc
+		GROUP BY ae.games, nr.region) as tmp
+	GROUP BY region) as tmp1
+WHERE count IN (SELECT count(distinct(games)) 
+FROM athlete_event)
+
+
+-- 6. Identify the sport which was played in all summer olympics.
+--Problem Statement: SQL query to fetch the list of all sports which have been part of every olympics.
+SELECT *
+ FROM (
+	SELECT sport, 
+	rank() OVER(PARTITION BY sport ORDER BY games) as "no_of_games"
+	FROM (
+		SELECT sport, games
+		FROM athlete_event
+		GROUP BY games, sport
+		ORDER BY sport
+	) as tmp) as tmp5
+INNER JOIN (
+SELECT max(counts) as "total_games" FROM (
+	SELECT sport, count(*) as "counts" FROM (
+		SELECT sport, games
+		FROM athlete_event
+		GROUP BY games, sport) as tmp
+	GROUP BY sport
+	ORDER BY count(*) DESC) as tmp1) a1
+ON tmp5.no_of_games = a1.total_games
