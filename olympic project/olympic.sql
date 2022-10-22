@@ -90,6 +90,8 @@ FROM athlete_event)
 --Problem Statement: SQL query to fetch the list of all sports which have been part of every olympics.
 SELECT *
  FROM (
+	-- it gives rank to all sports according to games, if same game occur in multiple games its 
+	-- rank would be increase by one
 	SELECT sport, 
 	rank() OVER(PARTITION BY sport ORDER BY games) as "no_of_games"
 	FROM (
@@ -99,6 +101,7 @@ SELECT *
 		ORDER BY sport
 	) as tmp) as tmp5
 INNER JOIN (
+-- here it give maximum values of 29
 SELECT max(counts) as "total_games" FROM (
 	SELECT sport, count(*) as "counts" FROM (
 		SELECT sport, games
