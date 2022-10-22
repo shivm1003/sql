@@ -110,3 +110,15 @@ SELECT max(counts) as "total_games" FROM (
 	GROUP BY sport
 	ORDER BY count(*) DESC) as tmp1) a1
 ON tmp5.no_of_games = a1.total_games
+
+
+-- 7. Which Sports were just played only once in the olympics.
+-- Problem Statement: Using SQL query, Identify the sport which were just played once in all of olympics.
+
+SELECT sport, count(*)
+FROM (
+	SELECT DISTINCT games, sport
+	FROM athlete_event) as tmp
+GROUP BY sport
+HAVING count(*) = 1
+ORDER BY sport
