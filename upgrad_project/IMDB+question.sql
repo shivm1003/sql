@@ -450,14 +450,10 @@ WITH tab AS (
 ) 
 SELECT 
   name, count(*) 
-FROM 
-  tab 
-GROUP BY 
-  name 
-ORDER BY 
-  count(*) DESC 
-LIMIT 
-  3
+FROM tab 
+GROUP BY name 
+ORDER BY count(*) DESC 
+LIMIT 3
 
 
 /* James Mangold can be hired as the director for RSVP's next project. Do you remeber his movies, 'Logan' and 'The Wolverine'. 
