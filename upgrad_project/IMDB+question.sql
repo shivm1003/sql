@@ -634,6 +634,26 @@ GROUP BY
 -- Type your code below:
 
 -- Top 3 Genres based on most number of movies
+WITH new_table AS (
+	SELECT m.title, genre, worlwide_gross_income, year,
+		DENSE_RANK() OVER(PARTITION BY year ORDER BY worlwide_gross_income DESC) AS "rank"
+	FROM 
+		movie AS m
+	INNER JOIN 
+		genre AS g
+	ON
+		m.id = g.movie_id
+	WHERE 
+		worlwide_gross_income IS NOT NULL
+	AND 
+		g.genre IN(
+			SELECT genre
+			FROM genre AS g
+			GROUP BY genre
+			ORDER BY count(*) DESC
+			LIMIT 3))
+SELECT * FROM new_table
+WHERE rank BETWEEN 1 AND 5
 
 
 
