@@ -656,14 +656,6 @@ SELECT * FROM new_table
 WHERE rank BETWEEN 1 AND 5
 
 
-
-
-
-
-
-
-
-
 -- Finally, let’s find out the names of the top two production houses that have produced the highest number of hits among multilingual movies.
 -- Q27.  Which are the top two production houses that have produced the highest number of hits (median rating >= 8) among multilingual movies?
 /* Output format:
@@ -675,6 +667,21 @@ WHERE rank BETWEEN 1 AND 5
 |	.				|		.			|			.		  |
 +-------------------+-------------------+---------------------+*/
 -- Type your code below:
+SELECT production_company, 
+	count(*) as "movie_count",
+	dense_rank() over(order by count(*) desc)
+FROM 
+	movie as m
+INNER JOIN 
+	ratings as r
+ON
+	m.id = r.movie_id
+WHERE 
+	median_rating>=8 AND production_company IS NOT NULL AND POSITION(',' IN languages)>0
+GROUP BY 
+	production_company
+LIMIT 2;
+
 
 
 
