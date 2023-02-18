@@ -570,13 +570,18 @@ Now let us divide all the thriller movies in the following categories and find o
 			Rating < 5: Flop movies
 --------------------------------------------------------------------------------------------*/
 -- Type your code below:
-
-
-
-
-
-
-
+SELECT r.movie_id, avg_rating,
+CASE
+	WHEN r.avg_rating > 8 THEN 'Superhit'
+	WHEN r.avg_rating BETWEEN 7 and 8 THEN 'Hit'
+	WHEN r.avg_rating >= 5 AND r.avg_rating < 7 THEN 'one-time-watch'
+	WHEN r.avg_rating < 5 THEN 'Flop'
+	ELSE 'No ratings'
+END
+FROM ratings as r
+INNER JOIN genre as g
+ON r.movie_id = g.movie_id
+where genre = 'Thriller'
 
 
 /* Until now, you have analysed various tables of the data set. 
