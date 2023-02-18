@@ -601,14 +601,18 @@ Now, you will perform some tasks that will give you a broader understanding of t
 |		.		|			.		|	       .		  |	   .	    		 |
 +---------------+-------------------+---------------------+----------------------+*/
 -- Type your code below:
-
-
-
-
-
-
-
-
+SELECT g.genre,
+	round(avg(duration),2) as "avg_duration",
+	sum(round(avg(duration),2)) over(order by genre ROWS UNBOUNDED PRECEDING) as "running_total_duration",
+	avg(round(avg(duration),2)) over(order by genre ROWS 10 PRECEDING) as "moving_avg_duration"
+FROM 
+	movie as m
+INNER JOIN 
+	genre as g
+ON
+	m.id = g.movie_id
+GROUP BY 
+	g.genre
 
 -- Round is good to have and not a must have; Same thing applies to sorting
 
